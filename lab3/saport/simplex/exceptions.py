@@ -1,0 +1,2 @@
+class Unbounded(Exception):
+    pass
