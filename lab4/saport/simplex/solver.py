@@ -6,7 +6,10 @@ from .expressions import constraint as c
 from .expressions import variable as v
 from . import solution as s 
 from . import tableaux as t
-import numpy as np 
+import numpy as np
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 class Solver:
     """
@@ -32,6 +35,7 @@ class Solver:
     def _basic_initial_tableaux(self, model):
         cost_row = np.array((-1 * model.objective.expression).factors(model) + [0.0])
         table = np.array([cost_row] + [c.expression.factors(model) + [c.bound] for c in model.constraints])
+
         return t.Tableaux(model, table)
 
     def _optimize(self, tableaux):
@@ -99,38 +103,101 @@ class Solver:
         return slack_variables
 
     def _add_surplus_variables(self, model):
-        # TODO: add surplus_variables based on the _add_slack_variables
-        pass
+        # TODO: check it later
+        surplus_variables = dict()
+        for (i, constraint) in enumerate(model.constraints.copy()):
+            if constraint.type == c.ConstraintType.GE:
+                surplus_var = model.create_variable(f"s{i}")
+                surplus_variables[surplus_var] = i
+                constraint.expression = constraint.expression - surplus_var
+        return surplus_variables
 
     def _add_artificial_variables(self, model):
-        # TODO: add artificial variables to the model based on the _add_slack_variables
-        pass
+        artificial_variables = dict()
+        for (i, constraint) in enumerate(model.constraints.copy()):
+            if constraint.type in (c.ConstraintType.GE, c.ConstraintType.EQ):
+                artificial_var = model.create_variable(f"R{i}")
+                artificial_variables[artificial_var] = i
+                constraint.expression = constraint.expression + artificial_var
+        return artificial_variables
+
+
+    def _first_phase_objective(self, model):
+        new_model = deepcopy(model)
+
+        # assign 0 to all present variables' factors
+        self.initial_objective = model.objective
+        for atom in new_model.objective.expression.atoms:
+            atom.factor = 0.0
+
+        # subtract artificial variables to objective expression
+        for var in self.artificial_variables.keys():
+            new_model.objective.expression -= var
+
+        return new_model
+
+
+    def _fix_basis(self, tableaux):
+
+        cost_row = tableaux.table[0, :]
+        constraints_rows = tableaux.table[1:, :]
+        logging.debug('Tableaux before fixing basis:\n{0}'.format(tableaux))
+
+        # TODO: may be to simple cus there is multiplication by 1 and substraction, maybe multiplication based on art. var factor?
+        #
+        for row in constraints_rows:
+            for i, factor in enumerate(row):
+                cost_row[i] -= factor
+
+        logging.debug('Tableaux after fixing basis:\n{0}'.format(tableaux))
+        return tableaux
+
 
     def _presolve_initial_tableaux(self, model):
         # TODO: create an initial tableaux for the artificial variables
         # - cost row should contain 1.0 for every artificial variable
         # - then you should subtract from it rows corresponding to the artificial variables
         # you may look at the _basic_initial_tableaux on how to create a tableaux
-        pass
+
+        # model with artificial variables in objective
+        model = self._first_phase_objective(model)
+        # tableaux with new objective row and fixed basis
+        tableaux = self._fix_basis(self._basic_initial_tableaux(model))
+        return tableaux
 
     def _artifical_variables_are_positive(self, tableaux):
-        # TODO: check whether any artificial variable is positive in the solution
-        pass
+        # check if indexes of basis are intercept with indexes of artificial variables
+        return any(set([var.index for var in self.artificial_variables.keys()]) & set(tableaux.extract_basis()))
+
 
     def _remove_artificial_variables(self, tableaux):
-        # TODO: remove artificial variables from the tableaux
-        # tip: np.delete
-        pass
+        # deleting columns from tableaux according to artificial variable indices
+        tableaux.table = np.delete(tableaux.table, [var.index for var in self.artificial_variables.keys()], 1)
+        # deleting artificial variables from model
+        [tableaux.model.variables.remove(var) for var in self.artificial_variables.keys()]
+        logging.debug('Tableaux after removing artificial variables:\n{0}'.format(tableaux))
+        return tableaux
 
-    def _restore_original_cost_row(self, tableaux, model):
-        # TODO: replace cost row in the tableaux with the original one
-        pass
+    def _restore_original_cost_row(self, tableaux, initial_model):
+        # change objective row to original
+        tableaux.table[0, :] = self._basic_initial_tableaux(initial_model).table[0, :]
+        logging.debug('Tableaux after restoring cost row:\n{0}'.format(tableaux))
+        return tableaux
+
 
     def _fix_cost_row_to_the_basis(self, tableaux, basis):
-        # TODO: similarly to the way we have zeroed the artificial variables in the first phase
-        #       now we have to subtract/add rows to the cost row to make the variables in basis
-        #       equal zero in the cost row 
-        pass
+        cost_row = tableaux.table[0, :]
+        constraints_rows = tableaux.table[1:, :]
+
+        for row_index, row in enumerate(constraints_rows):
+            temp_cost_row = deepcopy(cost_row)
+            for col_index, factor in enumerate(row):
+                cost_row[col_index] = cost_row[col_index] - factor * temp_cost_row[basis[row_index]]
+
+        tableaux.table[0, :] = cost_row
+        logging.debug('Tableaux after fixing cost row to the basis:\n{0}'.format(tableaux))
+
+        return tableaux
 
     def _translate_to_original_model(self, solution, model):
         assignment = [solution.value(var) for var in model.variables]
