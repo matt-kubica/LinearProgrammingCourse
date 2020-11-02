@@ -1,0 +1,143 @@
+\documentclass{article}[]
+
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{multirow}
+%\usepackage{theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACRO
+
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\pay}{\mathit{pay}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\s}{\mathbf{s}}
+\renewcommand{\b}{\mathbf{b}}
+\renewcommand{\r}{\mathbf{r}}
+\newcommand{\w}{\mathbf{w}}
+\renewcommand{\P}{\mathcal{P}}
+
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\tuple}[1]{\langle#1\rangle}
+\newcommand{\todo}[1]{\noindent{{\small\bf$<$\textsf{#1}$>$}}}
+
+\renewcommand{\sp}{\mathsf{sp}}
+\newcommand{\mcs}{\mathsf{cs}}
+\newcommand{\ssp}{\mathsf{ssp}}
+\newcommand{\SC}{\mathsf{SC}}
+\newcommand{\NE}{\mathsf{NE}}
+\newcommand{\SE}{\mathsf{SE}}
+
+%ALGORITMO
+\newcounter{stepcount}
+\newcommand{\step}{%
+        \stepcounter{stepcount}%
+        \thestepcount}
+\newcommand{\resetstep}{%
+        \setcounter{stepcount}{0}
+}
+
+\newtheoremstyle{break}
+  {\topsep}{\topsep}%
+  {\itshape}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{definition}
+\newtheorem{zad}{Zadanie}
+
+
+%\newtheorem{example}{Example}[section]
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{lemma}{Lemma}[section]
+%\newtheorem{theorem}{Theorem}[section]
+
+%\newenvironment{proof}{\vspace{-1mm}{\em Proof.}}{\vspace{2mm}}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\begin{document}
+\title{Badania operacyjne i systemy wspomagania decyzji
+\\ \Large 02 Programowanie liniowe}
+\date{}
+
+\maketitle
+
+\begin{zad}
+Dany jest program liniowy
+\begin{align*}
+	x_1+x_2+x_3 &\leq 30 \\
+	x_1+2x_2+x_3 &\geq 10 \\
+	2x_2+x_3 &\leq 20 \\
+	x_1,x_2,x_3 &\geq 0 \\
+	2x_1+x_2+3x_3 &\rightarrow \max.
+\end{align*}
+
+Sprowadź ten program do postaci kanonicznej i znajdź rozwiązanie.
+
+\end{zad}
+
+\begin{zad}
+	Racjonalna hodowla drobiu wymaga dostarczenia każdej sztuce dwóch składników odżywczych: $S_1$ i $S_2$ w ilościach nie mniejszych niż odpowiednio 1200 i 600 jednostek Składniki te zawarte są w czterech paszach: $P_1$, $P_2$, $P_3$ i $P_4$
+	
+	\begin{table}[htbp]
+		\begin{center}
+			
+			\begin{tabularx}{\textwidth}{|Y|Y|Y|Y|}
+				\hline
+				\multirow{2}{*}{Pasze} & \multicolumn{2}{|c|}{Zawartość w 1 kg paszy składnika} &Cena 1 kg  \\
+				\cline{2-3}
+				& $S_1$ & $S_2$ &paszy w zł\\
+				\hline
+				$P_1$ & 0,8 & 0,6 & 9,6\\
+				$P_2$ & 2,4 & 0,6 & 14,4\\
+				$P_3$ & 0,9 & 0,3 & 10,8\\
+				$P_4$ & 0,4 & 0,3 & 7,2\\
+				\hline
+				
+			\end{tabularx}
+		\end{center}
+	\end{table}
+	
+	W jakich ilościach zakupić poszczególne pasze, aby dostarczyć niezbędne składniki odżywcze przy możliwie najniższych kosztach zakupu pasz?
+	
+\end{zad}
+
+\begin{zad}
+
+Rudolf Edmund uwielbia steki i ziemniaki, dlatego też postanowił rozpocząć dietę opartą głównie na tych dwóch składnikach (z małym dodatkiem płynów i suplementów). Rudolf zdaje sobie sprawę, że nie jest to najzdrowsza dieta, dlatego postanowił je spożywać w ilościach, które zaspokoją mu przynajmniej pewne podstawowe potrzeby żywieniowe. Napisz program liniowy minimalizujący koszt takiej diety i znajdź rozwiązanie.
+
+\begin{table}[htbp]
+\begin{center}
+
+\begin{tabularx}{12cm}{|Y|Y|Y|Y|}
+\hline
+& \multicolumn{2}{|c|}{Gramy składnika w jednej porcji}& Dzienne \\
+\cline{2-3}
+Składnik & Steki & Ziemniaki& zapotrzebowanie w gramach\\
+\hline
+Węglowodany & 5 & 15 & $\geq$ 50\\
+Białka & 20 & 5 & $\geq$ 40 \\
+Tłuszcze & 15 & 2 & $\leq$ 60 \\
+\hline
+Cena za porcję & 8 zł & 4 zł &\\
+\hline
+
+\end{tabularx}
+\end{center}
+\end{table}
+
+\end{zad}
+
+\begin{zad}
+	Fabryka celulozy i papieru musi wyprodukować dokładnie 150 zwojów papieru o szerokości 105 cm, 200 zwojów papieru o szerokości 75 cm i 150 zwojów o szerokości 35 cm. Jako surowiec zostanie użyty papier zrolowany o szerokości 2 m. W jaki sposób fabryka ma zrealizować zamówienie tak, żeby odpad z procesu cięcia był jak najmniejszy? 
+\end{zad}
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
