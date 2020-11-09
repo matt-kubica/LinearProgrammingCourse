@@ -1,0 +1,116 @@
+\documentclass{article}[]
+
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{multirow}
+%\usepackage{theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MACRO
+
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\pay}{\mathit{pay}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\s}{\mathbf{s}}
+\renewcommand{\b}{\mathbf{b}}
+\renewcommand{\r}{\mathbf{r}}
+\newcommand{\w}{\mathbf{w}}
+\renewcommand{\P}{\mathcal{P}}
+
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\tuple}[1]{\langle#1\rangle}
+\newcommand{\todo}[1]{\noindent{{\small\bf$<$\textsf{#1}$>$}}}
+
+\renewcommand{\sp}{\mathsf{sp}}
+\newcommand{\mcs}{\mathsf{cs}}
+\newcommand{\ssp}{\mathsf{ssp}}
+\newcommand{\SC}{\mathsf{SC}}
+\newcommand{\NE}{\mathsf{NE}}
+\newcommand{\SE}{\mathsf{SE}}
+
+%ALGORITMO
+\newcounter{stepcount}
+\newcommand{\step}{%
+        \stepcounter{stepcount}%
+        \thestepcount}
+\newcommand{\resetstep}{%
+        \setcounter{stepcount}{0}
+}
+
+\newtheoremstyle{break}
+  {\topsep}{\topsep}%
+  {\itshape}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{definition}
+\newtheorem{zad}{Zadanie}
+
+
+%\newtheorem{example}{Example}[section]
+%\newtheorem{definition}{Definition}[section]
+%\newtheorem{lemma}{Lemma}[section]
+%\newtheorem{theorem}{Theorem}[section]
+
+%\newenvironment{proof}{\vspace{-1mm}{\em Proof.}}{\vspace{2mm}}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\begin{document}
+\title{Badania operacyjne i systemy wspomagania decyzji
+\\ \Large 05 Programowanie liniowe - analiza wrażliwości\\ i postać dualna}
+\date{}
+
+\maketitle
+
+\begin{zad}[5 pt.]
+Zakład produkuje 3 rodzaje akumulatorów do samochodów: model SS (super), model S (standardowy), i model O (oszczędny). Każdy z trzech typów podlega obróbce na 3 maszynach: Model SS wymaga 2 godziny obróbki  na maszynie M$_1$, 1 godzina obróbki na maszynie M$_2$ i 3 godziny obróbki na maszynie M$_3$.  Do wyprodukowania modelu S wymagane są 2 godziny obróbki  na maszynie M$_1$, 3 godziny obróbki na maszynie M$_2$ i 1 godziny obróbki na maszynie M$_3$, a do modelu O 5 godzin obróbki  na maszynie M$_1$, 2 godziny obróbki na maszynie M$_2$ i 3 godziny obróbki na maszynie M$_3$. Z planów produkcyjnych wynika, że w ciągu tygodnia maszyny będą pracować przy produkcji akumulatorów nie dłużej niż: M$_1$ 40 godzin, pozostałe po 30 godzin. Wiedząc, że zyski jednostkowe wynoszą: z modelu SS - 32 zł, z modelu S - 24 zł i z modelu 48 zł, określić optymalną tygodniową produkcję akumulatorów, przy jakiej zysk przedsiębiorstwa będzie maksymalny. 
+
+Należy:
+
+\begin{enumerate}
+\item Znaleźć postać dualną problemu
+\item Określić wrażliwość rozwiązania optymalnego na zmiany cen akumulatorów.
+\end{enumerate}
+\end{zad}
+
+\begin{zad}[5 pt.]
+Asortyment zakładu produkującego meble szkolne stanowią ławki, stoły i krzesła drewniane. Produkcja każdego wyrobu odbywa się kolejno na trzech wydziałach produkcyjnych: na wydziale obróbki wstępnej drewna, w stolarni i wykańczalni, których dopuszczalny czas pracy (wynikający z liczby zatrudnionych pracowników) wynosi odpowiednio: 960, 800 oraz 320 godzin. W poniższej tablicy podano czas obróbki każdego wyboru na poszczególnych wydziałach oraz zyski uzyskiwane przez zakład ze sprzedaży wyrobów.
+
+\begin{table}[htbp]
+\begin{center}
+
+\begin{tabularx}{\textwidth}{|Y|Y|Y|Y|Y|}
+\hline
+& \multicolumn{3}{|c|}{Nakład czasu pracy na jednostkę} &   \\
+\multirow{2}{*}{Wyroby}&\multicolumn{3}{|c|}{wyrobu na wydziale}& Zysk\\ 
+\cline{2-4}
+&obróbki&\multirow{2}{*}{stolarni}&\multirow{2}{*}{wykańczalni}&jednostkowy\\
+&wstępnej& & & \\
+\hline
+Ławka &8&8&4&60\\
+Stół&6&4&3&30\\
+Krzesło&1&3&1&20\\
+\hline
+\end{tabularx}
+\end{center}
+\end{table}
+
+Należy:
+\begin{enumerate}
+	\item Znaleźć postać dualną problemu
+	\item Określić wrażliwość rozwiązania optymalnego na zmiany cen mebli.
+\end{enumerate}
+
+\end{zad}
+
+
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
