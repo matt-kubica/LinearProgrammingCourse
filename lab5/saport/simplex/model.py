@@ -7,7 +7,10 @@ from .expressions import expression as ex
 from .expressions import variable as va
 from .expressions import objective as ob
 from .expressions import constraint as co
+from .expressions.expression import Expression
 import numpy as np
+from .solver import Solver
+
 
 class Model:
     """
@@ -134,23 +137,25 @@ class Model:
                 raise Exception("Model doesn't support (yet) duals for problems with equality constraints")
 
     def _create_dual_variables(self, primal, dual):
-        #TODO: add variables to the dual,
-        #      one per constraint in the primal model  
-        raise Exception("not implemented yet!")
+        for i in range(len(primal.constraints)):
+            dual.create_variable('y{0}'.format(i + 1))
 
     def _create_dual_objective(self, primal, dual):
-        #TODO: create objective in the dual
-        #      - the cost coefficients should be equal to the constraints bound in the primal
-        #      - the objective should be minimized (primal is in the standard form)
-        #      tip: new method Experession.from_vectors may be useful!
-        raise Exception("not implemented yet!")
+        factors = [constraint.bound for constraint in primal.constraints]
+        objective_expression = Expression.from_vectors(dual.variables, factors)
+        dual.minimize(objective_expression)
+
 
     def _create_dual_constraints(self, primal, dual):
-        #TODO: create objective in the dual
-        #      - the factors matrix should be equal to the transposed matrix from the primal
-        #      - the constraints should be of type >= (primal is in the standard form)
-        #      tip: new method Experession.from_vectors may be useful!
-        raise Exception("not implemented yet!")
+        # table without cost row and RHS
+        primal_factors = Solver._basic_initial_tableaux(primal).table[1:, :-1]
+        dual_factors = primal_factors.T
+
+        for i, factor_row in enumerate(dual_factors):
+            constraint_expression = Expression.from_vectors(dual.variables, factor_row)
+            constraint = constraint_expression >= primal.objective.expression.atoms[i].factor
+            dual.add_constraint(constraint)
+
 
     def _change_objective_to_max(self):
         if self.objective.type == ob.ObjectiveType.MIN:

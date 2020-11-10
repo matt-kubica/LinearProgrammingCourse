@@ -7,7 +7,7 @@ from .expressions import constraint as c
 from .expressions import variable as v
 from . import solution as s 
 from . import tableaux as t
-import numpy as np 
+import numpy as np
 
 class Solver:
     """
@@ -129,7 +129,8 @@ class Solver:
         table = np.array([objective_row] + [c.expression.factors(model) + [c.bound] for c in model.constraints])
         return t.Tableaux(model, table)
 
-    def _basic_initial_tableaux(self, model):
+    @staticmethod
+    def _basic_initial_tableaux(model):
         objective_row = np.array((-1 * model.objective.expression).factors(model) + [0.0])
         table = np.array([objective_row] + [c.expression.factors(model) + [c.bound] for c in model.constraints])
         return t.Tableaux(model, table)
