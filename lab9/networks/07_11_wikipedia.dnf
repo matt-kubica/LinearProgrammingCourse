@@ -1,0 +1,22 @@
+c current wikipedia example
+c TODO: fill missing data based on the https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm#Example
+c and other examples in this folder
+c - lines starting with `c` are comments
+c - line `p <type> <number of nodes> <number of edges>`
+c   defines the problem, where <type> = max defines a max-flow problem
+c - lines `n <node number> <node type>` define sink (type 't') and source (type 's') nodes
+c - lines 'a <node number> <node number> <capacity>' define edges (arcs) in the network
+p max 7 11
+n 1 s
+n 7 t
+a 1 2 3
+a 1 4 3
+a 2 3 4
+a 3 1 3
+a 3 4 1
+a 3 5 2
+a 4 6 6
+a 4 5 2
+a 6 7 9
+a 5 7 1
+a 5 2 1
